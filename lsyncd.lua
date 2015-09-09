@@ -368,7 +368,7 @@ local function lockGlobals( )
 	mt.__newindex = function( t, k, v )
 		if k ~= '_' and string.sub( k, 1, 2 ) ~= '__' then
 			error('Lsyncd does not allow GLOBALS to be created on the fly. '..
-			      'Declare "'..k..'" local or declare global on load.', 2)
+					'Declare "'..k..'" local or declare global on load.', 2)
 		else
 			rawset( t, k, v )
 		end
@@ -610,7 +610,7 @@ local Combiner = ( function( )
 
 			-- if one is a parent directory of another, events are blocking
 			if d1.path:byte(-1) == 47 and string.starts(d2.path, d1.path) or
-			   d2.path:byte(-1) == 47 and string.starts(d1.path, d2.path)
+					d2.path:byte(-1) == 47 and string.starts(d1.path, d2.path)
 			then
 				return 'stack'
 			end
@@ -623,8 +623,8 @@ local Combiner = ( function( )
 		if d1.etype == 'Move' and d2.etype ~= 'Move' then
 			-- if the from field could be damaged the events are stacked
 			if d1.path == d2.path or
-			   d2.path:byte(-1) == 47 and string.starts(d1.path, d2.path) or
-			   d1.path:byte(-1) == 47 and string.starts(d2.path, d1.path)
+					d2.path:byte(-1) == 47 and string.starts(d1.path, d2.path) or
+					d1.path:byte(-1) == 47 and string.starts(d2.path, d1.path)
 			then
 				log(
 					'Delay',
@@ -650,7 +650,7 @@ local Combiner = ( function( )
 						'Delay',
 						d2.etype, ':', d2.path,
 						' turns ',
-				        'Move :', d1.path, '->', d1.path2,
+						'Move :', d1.path, '->', d1.path2,
 						' into ',
 						'Delete:', d1.path
 					)
@@ -666,7 +666,7 @@ local Combiner = ( function( )
 			end
 
 			if d2.path :byte(-1) == 47 and string.starts(d1.path2, d2.path) or
-			   d1.path2:byte(-1) == 47 and string.starts(d2.path,  d1.path2)
+					d1.path2:byte(-1) == 47 and string.starts(d2.path,  d1.path2)
 			then
 				log(
 					'Delay'
@@ -684,10 +684,10 @@ local Combiner = ( function( )
 		-- a move upon a non-move event
 		if d1.etype ~= 'Move' and d2.etype == 'Move' then
 			if d1.path == d2.path or d1.path == d2.path2 or
-			   d1.path :byte(-1) == 47 and string.starts(d2.path,  d1.path) or
-			   d1.path :byte(-1) == 47 and string.starts(d2.path2, d1.path) or
-			   d2.path :byte(-1) == 47 and string.starts(d1.path,  d2.path) or
-			   d2.path2:byte(-1) == 47 and string.starts(d1.path,  d2.path2)
+					d1.path :byte(-1) == 47 and string.starts(d2.path,  d1.path) or
+					d1.path :byte(-1) == 47 and string.starts(d2.path2, d1.path) or
+					d2.path :byte(-1) == 47 and string.starts(d1.path,  d2.path) or
+					d2.path2:byte(-1) == 47 and string.starts(d1.path,  d2.path2)
 			then
 				log(
 					'Delay',
@@ -708,15 +708,15 @@ local Combiner = ( function( )
 			-- TODO combine moves,
 
 			if d1.path  == d2.path or d1.path  == d2.path2 or
-			   d1.path2 == d2.path or d2.path2 == d2.path or
-			   d1.path :byte(-1) == 47 and string.starts(d2.path,  d1.path)  or
-			   d1.path :byte(-1) == 47 and string.starts(d2.path2, d1.path)  or
-			   d1.path2:byte(-1) == 47 and string.starts(d2.path,  d1.path2) or
-			   d1.path2:byte(-1) == 47 and string.starts(d2.path2, d1.path2) or
-			   d2.path :byte(-1) == 47 and string.starts(d1.path,  d2.path)  or
-			   d2.path :byte(-1) == 47 and string.starts(d1.path2, d2.path)  or
-			   d2.path2:byte(-1) == 47 and string.starts(d1.path,  d2.path2) or
-			   d2.path2:byte(-1) == 47 and string.starts(d1.path2, d2.path2)
+					d1.path2 == d2.path or d2.path2 == d2.path or
+					d1.path :byte(-1) == 47 and string.starts(d2.path,  d1.path)  or
+					d1.path :byte(-1) == 47 and string.starts(d2.path2, d1.path)  or
+					d1.path2:byte(-1) == 47 and string.starts(d2.path,  d1.path2) or
+					d1.path2:byte(-1) == 47 and string.starts(d2.path2, d1.path2) or
+					d2.path :byte(-1) == 47 and string.starts(d1.path,  d2.path)  or
+					d2.path :byte(-1) == 47 and string.starts(d1.path2, d2.path)  or
+					d2.path2:byte(-1) == 47 and string.starts(d1.path,  d2.path2) or
+					d2.path2:byte(-1) == 47 and string.starts(d1.path2, d2.path2)
 			then
 				log(
 					'Delay',
@@ -840,11 +840,11 @@ local InletFactory = ( function( )
 			return e2d[ event ].status
 		end,
 
-		--
+		---
 		-- Returns true if event relates to a directory
 		--
 		isdir = function( event )
-			return string.byte( getPath( event ), -1 ) == 47
+			return lsyncd.realdir( getPath ( event ));
 		end,
 
 		--
@@ -910,7 +910,7 @@ local InletFactory = ( function( )
 		--
 		sourcePathdir = function( event )
 			return e2d[event].sync.source ..
-				( string.match( getPath( event ), '^(.*/)[^/]+/?' ) or '' )
+					( string.match( getPath( event ), '^(.*/)[^/]+/?' ) or '' )
 		end,
 
 		------
@@ -942,7 +942,7 @@ local InletFactory = ( function( )
 		--
 		targetPathdir = function( event )
 			return e2d[ event ].sync.config.target ..
-				( string.match( getPath( event ), '^(.*/)[^/]+/?' ) or '' )
+					( string.match( getPath( event ), '^(.*/)[^/]+/?' ) or '' )
 		end,
 
 		--
@@ -951,7 +951,7 @@ local InletFactory = ( function( )
 		--
 		targetPathname = function( event )
 			return e2d[ event ].sync.config.target ..
-				cutSlash( getPath( event ) )
+					cutSlash( getPath( event ) )
 		end,
 	}
 
@@ -1380,11 +1380,13 @@ local Excludes = ( function( )
 			terminate( -1 )
 		end
 
-	    for line in f:lines() do
+		for line in f:lines() do
 
 			-- lsyncd 2.0 does not support includes
 
-			if not string.match(line, '%s*+') then
+			if not string.match(line, '^%s*%+') and
+					not string.match(line, '^%s*#') and
+					not string.match(line, '^%s*$') then
 				local p = string.match(
 					line, '%s*-?%s*(.*)'
 				)
@@ -1452,7 +1454,7 @@ local Excludes = ( function( )
 end )( )
 
 --
--- Holds information about one observed directory inclusively subdirs.
+-- Holds information about one observed directory including subdirs.
 --
 local Sync = ( function( )
 
@@ -1484,6 +1486,7 @@ local Sync = ( function( )
 	-- Removes a delay.
 	--
 	local function removeDelay( self, delay )
+
 		if self.delays[ delay.dpos ] ~= delay then
 			error( 'Queue is broken, delay not a dpos' )
 		end
@@ -1492,9 +1495,13 @@ local Sync = ( function( )
 
 		-- free all delays blocked by this one.
 		if delay.blocks then
+
 			for i, vd in pairs( delay.blocks ) do
+
 				vd.status = 'wait'
+
 			end
+
 		end
 	end
 
@@ -1505,18 +1512,25 @@ local Sync = ( function( )
 
 		-- not concerned if watch rootdir doesnt match
 		if not path:starts( self.source ) then
+
 			return false
+
 		end
 
 		-- a sub dir and not concerned about subdirs
 		if self.config.subdirs == false and
-			path:sub( #self.source, -1 ):match( '[^/]+/?' )
+
+				path:sub( #self.source, -1 ):match( '[^/]+/?' )
+
 		then
+
 			return false
+
 		end
 
 		-- concerned if not excluded
 		return not self.excludes:test( path:sub( #self.source ) )
+
 	end
 
 	--
@@ -1638,6 +1652,7 @@ local Sync = ( function( )
 		end
 
 		table.insert( oldDelay.blocks, newDelay )
+
 	end
 
 	--
@@ -1648,10 +1663,10 @@ local Sync = ( function( )
 		log(
 			'Function',
 			'delay( ',
-				self.config.name, ', ',
-				etype, ', ',
-				path, ', ',
-				path2,
+			self.config.name, ', ',
+			etype, ', ',
+			path, ', ',
+			path2,
 			' )'
 		)
 
@@ -1659,6 +1674,7 @@ local Sync = ( function( )
 		local function recurse( )
 
 			if etype == 'Create' and path:byte( -1 ) == 47 then
+
 				local entries = lsyncd.readdir( self.source .. path )
 
 				if entries then
@@ -1904,7 +1920,7 @@ local Sync = ( function( )
 
 		for i, d in Queue.qpairs( self.delays ) do
 			if d.status == 'active' or
-				( test and not test( InletFactory.d2e( d ) ) )
+					( test and not test( InletFactory.d2e( d ) ) )
 			then
 				getBlocks( d )
 			elseif not blocks[ d ] then
@@ -1924,8 +1940,8 @@ local Sync = ( function( )
 		log(
 			'Function',
 			'invokeActions( "',
-				self.config.name, '", ',
-				timestamp,
+			self.config.name, '", ',
+			timestamp,
 			' )'
 		)
 
@@ -1938,7 +1954,7 @@ local Sync = ( function( )
 
 			-- if reached the global limit return
 			if uSettings.maxProcesses and
-				processCount >= uSettings.maxProcesses
+					processCount >= uSettings.maxProcesses
 			then
 				log('Alarm', 'at global process limit.')
 				return
@@ -2060,6 +2076,7 @@ local Sync = ( function( )
 	-- Creates a new Sync
 	--
 	local function new( config )
+
 		local s = {
 			-- fields
 
@@ -2109,20 +2126,23 @@ local Sync = ( function( )
 			else
 				error( 'type for exclude must be table or string', 2 )
 			end
+
 		end
 
 		if
-			config.delay ~= nil and
-			(
+		config.delay ~= nil and
+				(
 				type(config.delay) ~= 'number' or
-				config.delay < 0
-			)
+						config.delay < 0
+				)
 		then
 			error( 'delay must be a number and >= 0', 2 )
 		end
 
 		if config.excludeFrom then
+
 			s.excludes:loadFile( config.excludeFrom )
+
 		end
 
 		return s
@@ -2131,7 +2151,9 @@ local Sync = ( function( )
 	--
 	-- Public interface
 	--
-	return { new = new }
+	return {
+		new = new
+	}
 
 end )( )
 
@@ -2210,15 +2232,15 @@ local Syncs = ( function( )
 		--
 		for k, v in pairs( cs ) do
 			if
-				(
-					type( k ) ~= 'number' or
+			(
+			type( k ) ~= 'number' or
 					cs._verbatim == true
-				)
-				and
-				(
+			)
+					and
+					(
 					type( cs._merge ) ~= 'table' or
-					cs._merge[ k ] == true
-				)
+							cs._merge[ k ] == true
+					)
 			then
 				inheritKV( cd, k, v )
 			end
@@ -2261,8 +2283,8 @@ local Syncs = ( function( )
 				cd[ k ] = { }
 				inherit( cd[ k ], v )
 			elseif
-				dtype == 'table' and
-				v._merge ~= false
+			dtype == 'table' and
+					v._merge ~= false
 			then
 				inherit( cd[ k ], v )
 			end
@@ -2285,7 +2307,7 @@ local Syncs = ( function( )
 			log(
 				'Warn',
 				'settings = { ... } is deprecated.\n'..
-				'      please use settings{ ... } (without the equal sign)'
+						'      please use settings{ ... } (without the equal sign)'
 			)
 
 			for k, v in pairs( settings ) do
@@ -2367,12 +2389,12 @@ local Syncs = ( function( )
 		config.source = realsrc
 
 		if
-			not config.action   and
-			not config.onAttrib and
-			not config.onCreate and
-			not config.onModify and
-			not config.onDelete and
-			not config.onMove
+		not config.action   and
+				not config.onAttrib and
+				not config.onCreate and
+				not config.onModify and
+				not config.onDelete and
+				not config.onMove
 		then
 			local info = debug.getinfo( 3, 'Sl' )
 			log(
@@ -2387,13 +2409,13 @@ local Syncs = ( function( )
 
 		-- the monitor to use
 		config.monitor =
-			uSettings.monitor or
-			config.monitor or
-			Monitors.default( )
+		uSettings.monitor or
+				config.monitor or
+				Monitors.default( )
 
 		if
-			config.monitor ~= 'inotify' and
-			config.monitor ~= 'fsevents'
+		config.monitor ~= 'inotify' and
+				config.monitor ~= 'fsevents'
 		then
 			local info = debug.getinfo( 3, 'Sl' )
 
@@ -2538,7 +2560,7 @@ local Inotify = ( function( )
 		log(
 			'Function',
 			'Inotify.addWatch( ',
-				path,
+			path,
 			' )'
 		)
 
@@ -2577,6 +2599,9 @@ local Inotify = ( function( )
 		end
 
 		for dirname, isdir in pairs( entries ) do
+
+
+			isdir = lsyncd.isdir(path .. dirname)
 			if isdir then
 				addWatch( path .. dirname .. '/' )
 			end
@@ -2601,19 +2626,37 @@ local Inotify = ( function( )
 	-- Called when an event has occured.
 	--
 	local function event(
-		etype,     -- 'Attrib', 'Modify', 'Create', 'Delete', 'Move'
-		wd,        --  watch descriptor, matches lsyncd.inotifyadd()
-		isdir,     --  true if filename is a directory
-		time,      --  time of event
-		filename,  --  string filename without path
-		wd2,       --  watch descriptor for target if it's a Move
-		filename2  --  string filename without path of Move target
+	etype,     -- 'Attrib', 'Modify', 'Create', 'Delete', 'Move'
+	wd,        --  watch descriptor, matches lsyncd.inotifyadd()
+	isdir,     --  true if filename is a directory
+	time,      --  time of event
+	filename,  --  string filename without path
+	wd2,       --  watch descriptor for target if it's a Move
+	filename2  --  string filename without path of Move target
 	)
+		-- looks up the watch descriptor id
+		local path = wdpaths[ wd ]
+
+		if path then
+			path = path..filename
+		end
+
+		local path2 = wd2 and wdpaths[ wd2 ]
+
+		if path2 and filename2 then
+			path2 = path2..filename2
+		end
+
+		-- overwrite isdir --
+		isdir = lsyncd.isdir(path);
+
 		if isdir then
 			filename = filename .. '/'
+			path = path .. '/'
 
 			if filename2 then
 				filename2 = filename2 .. '/'
+				path2 = path2 .. '/'
 			end
 		end
 
@@ -2637,18 +2680,6 @@ local Inotify = ( function( )
 				filename,
 				'(', wd, ')'
 			)
-		end
-
-		-- looks up the watch descriptor id
-		local path = wdpaths[ wd ]
-		if path then
-			path = path..filename
-		end
-
-		local path2 = wd2 and wdpaths[ wd2 ]
-
-		if path2 and filename2 then
-			path2 = path2..filename2
 		end
 
 		if not path and path2 and etype == 'Move' then
@@ -2787,11 +2818,11 @@ local Fsevents = ( function( )
 	-- Called when an event has occured.
 	--
 	local function event(
-		etype,  --  'Attrib', 'Modify', 'Create', 'Delete', 'Move'
-		isdir,  --  true if filename is a directory
-		time,   --  time of event
-		path,   --  path of file
-		path2   --  path of target in case of 'Move'
+	etype,  --  'Attrib', 'Modify', 'Create', 'Delete', 'Move'
+	isdir,  --  true if filename is a directory
+	time,   --  time of event
+	path,   --  path of file
+	path2   --  path of target in case of 'Move'
 	)
 		if isdir then
 			path = path .. '/'
@@ -2952,7 +2983,7 @@ local functionWriter = ( function( )
 	-- Returns a table of arguments
 	--
 	local function splitStr(
-		str -- a string where parameters are seperated by spaces.
+	str -- a string where parameters are seperated by spaces.
 	)
 		local args = { }
 
@@ -3011,7 +3042,7 @@ local functionWriter = ( function( )
 				while ai <= #a do
 					if a[ ai ][ 1 ] then
 						local pre, post =
-							string.match( a[ ai ][ 2 ], '(.*)'..v[1]..'(.*)' )
+						string.match( a[ ai ][ 2 ], '(.*)'..v[1]..'(.*)' )
 
 						if pre then
 
@@ -3065,9 +3096,9 @@ local functionWriter = ( function( )
 		end
 
 		ft = ft ..
-			"    log('Normal', 'Event ', event.etype, \n" ..
-			"        ' spawns action \"".. str.."\"')\n" ..
-			"    spawn(event"
+				"    log('Normal', 'Event ', event.etype, \n" ..
+				"        ' spawns action \"".. str.."\"')\n" ..
+				"    spawn(event"
 
 		for _, v in ipairs( args ) do
 			ft = ft .. ',\n         ' .. v
@@ -3131,9 +3162,9 @@ local functionWriter = ( function( )
 
 		-- TODO do array joining instead
 		ft = ft..
-			"    log('Normal', 'Event ',event.etype,\n"..
-			"        [[ spawns shell \""..lc.."\"]])\n"..
-			"    spawnShell(event, [["..cmd.."]]"
+				"    log('Normal', 'Event ',event.etype,\n"..
+				"        [[ spawns shell \""..lc.."\"]])\n"..
+				"    spawnShell(event, [["..cmd.."]]"
 
 		for _, v in ipairs( args ) do
 			ft = ft..',\n         '..v
@@ -3155,12 +3186,12 @@ local functionWriter = ( function( )
 		local ft
 		if string.byte( str, 1, 1 ) == 47 then
 			-- starts with /
-			 ft = translateBinary( str )
+			ft = translateBinary( str )
 		elseif string.byte( str, 1, 1 ) == 94 then
 			-- starts with ^
-			 ft = translateShell( str:sub( 2, -1 ) )
+			ft = translateShell( str:sub( 2, -1 ) )
 		else
-			 ft = translateShell( str )
+			ft = translateShell( str )
 		end
 
 		log(
@@ -3219,7 +3250,7 @@ local StatusFile = ( function( )
 		log(
 			'Function',
 			'write( ',
-				timestamp,
+			timestamp,
 			' )'
 		)
 
@@ -3245,8 +3276,8 @@ local StatusFile = ( function( )
 			if not alarm then
 
 				local nextWrite =
-					lastWritten and timestamp +
-					uSettings.statusInterval
+				lastWritten and timestamp +
+						uSettings.statusInterval
 
 				if nextWrite and timestamp < nextWrite then
 					log(
@@ -3272,9 +3303,9 @@ local StatusFile = ( function( )
 			log(
 				'Error',
 				'Cannot open status file "' ..
-					uSettings.statusFile ..
-					'" :' ..
-					err
+						uSettings.statusFile ..
+						'" :' ..
+						err
 			)
 			return
 		end
@@ -3357,8 +3388,8 @@ local UserAlarms = ( function( )
 	--
 	local function invoke( timestamp )
 		while
-			#alarms > 0 and
-			alarms[ 1 ].timestamp <= timestamp
+		#alarms > 0 and
+				alarms[ 1 ].timestamp <= timestamp
 		do
 			alarms[ 1 ].func( alarms[ 1 ].timestamp, alarms[ 1 ].extra )
 			table.remove( alarms, 1 )
@@ -3457,10 +3488,10 @@ end
 --   * an expired alarm.
 --   * a returned child process.
 --   * received filesystem events.
---   * received a HUP or TERM signal.
+--   * received a HUP, TERM or INT signal.
 --
 function runner.cycle(
-	timestamp   -- the current kernel time (in jiffies)
+timestamp   -- the current kernel time (in jiffies)
 )
 
 	if lsyncdStatus == 'fade' then
@@ -3468,8 +3499,8 @@ function runner.cycle(
 		if processCount > 0 then
 
 			if
-				lastReportedWaiting == false or
-				timestamp >= lastReportedWaiting + 60
+			lastReportedWaiting == false or
+					timestamp >= lastReportedWaiting + 60
 			then
 				lastReportedWaiting = timestamp
 
@@ -3498,8 +3529,8 @@ function runner.cycle(
 	-- not at global limit
 	--
 	if
-		not uSettings.maxProcesses or
-		processCount < uSettings.maxProcesses
+	not uSettings.maxProcesses or
+			processCount < uSettings.maxProcesses
 	then
 		local start = Syncs.getRound( )
 
@@ -3535,45 +3566,45 @@ end
 --
 function runner.help( )
 	io.stdout:write(
-[[
+		[[
 
-USAGE:
-  runs a config file:
-    lsyncd [OPTIONS] [CONFIG-FILE]
+        USAGE:
+          runs a config file:
+            lsyncd [OPTIONS] [CONFIG-FILE]
 
-  default rsync behaviour:
-    lsyncd [OPTIONS] -rsync [SOURCE] [TARGET]
+          default rsync behaviour:
+            lsyncd [OPTIONS] -rsync [SOURCE] [TARGET]
 
-  default rsync with mv's through ssh:
-    lsyncd [OPTIONS] -rsyncssh [SOURCE] [HOST] [TARGETDIR]
+          default rsync with mv's through ssh:
+            lsyncd [OPTIONS] -rsyncssh [SOURCE] [HOST] [TARGETDIR]
 
-  default local copying mechanisms (cp|mv|rm):
-    lsyncd [OPTIONS] -direct [SOURCE] [TARGETDIR]
+          default local copying mechanisms (cp|mv|rm):
+            lsyncd [OPTIONS] -direct [SOURCE] [TARGETDIR]
 
-OPTIONS:
-  -delay SECS         Overrides default delay times
-  -help               Shows this
-  -insist             Continues startup even if it cannot connect
-  -log    all         Logs everything (debug)
-  -log    scarce      Logs errors only
-  -log    [Category]  Turns on logging for a debug category
-  -logfile FILE       Writes log to FILE (DEFAULT: uses syslog)
-  -nodaemon           Does not detach and logs to stdout/stderr
-  -pidfile FILE       Writes Lsyncds PID into FILE
-  -runner FILE        Loads Lsyncds lua part from FILE
-  -version            Prints versions and exits
+        OPTIONS:
+          -delay SECS         Overrides default delay times
+          -help               Shows this
+          -insist             Continues startup even if it cannot connect
+          -log    all         Logs everything (debug)
+          -log    scarce      Logs errors only
+          -log    [Category]  Turns on logging for a debug category
+          -logfile FILE       Writes log to FILE (DEFAULT: uses syslog)
+          -nodaemon           Does not detach and logs to stdout/stderr
+          -pidfile FILE       Writes Lsyncds PID into FILE
+          -runner FILE        Loads Lsyncds lua part from FILE
+          -version            Prints versions and exits
 
-LICENSE:
-  GPLv2 or any later version.
+        LICENSE:
+          GPLv2 or any later version.
 
-SEE:
-  `man lsyncd` for further information.
+        SEE:
+          `man lsyncd` for further information.
 
-]])
+        ]])
 
---
---  -monitor NAME       Uses operating systems event montior NAME
---                      (inotify/fanotify/fsevents)
+	--
+	--  -monitor NAME       Uses operating systems event montior NAME
+	--                      (inotify/fanotify/fsevents)
 
 	os.exit( -1 )
 end
@@ -3605,114 +3636,114 @@ function runner.configure( args, monitors )
 		-- log is handled by core already.
 
 		delay =
-			{
-				1,
-				function( secs )
-					clSettings.delay = secs + 0
-				end
-			},
+		{
+			1,
+			function( secs )
+				clSettings.delay = secs + 0
+			end
+		},
 
 		insist =
-			{
-				0,
-				function( )
-					clSettings.insist = true
-				end
-			},
+		{
+			0,
+			function( )
+				clSettings.insist = true
+			end
+		},
 
 		log =
-			{
-				1,
-				nil
-			},
+		{
+			1,
+			nil
+		},
 
 		logfile =
-			{
-				1,
-				function( file )
-					clSettings.logfile = file
-				end
-			},
+		{
+			1,
+			function( file )
+				clSettings.logfile = file
+			end
+		},
 
 		monitor =
-			{
-				-1,
-				function( monitor )
-					if not monitor then
-						io.stdout:write( 'This Lsyncd supports these monitors:\n' )
-						for _, v in ipairs(Monitors.list) do
-							io.stdout:write('   ',v,'\n')
-						end
-
-						io.stdout:write('\n')
-
-						lsyncd.terminate(-1)
-					else
-						clSettings.monitor = monitor
+		{
+			-1,
+			function( monitor )
+				if not monitor then
+					io.stdout:write( 'This Lsyncd supports these monitors:\n' )
+					for _, v in ipairs(Monitors.list) do
+						io.stdout:write('   ',v,'\n')
 					end
+
+					io.stdout:write('\n')
+
+					lsyncd.terminate(-1)
+				else
+					clSettings.monitor = monitor
 				end
-			},
+			end
+		},
 
 		nodaemon =
-			{
-				0,
-				function( )
-					clSettings.nodaemon = true
-				end
-			},
+		{
+			0,
+			function( )
+				clSettings.nodaemon = true
+			end
+		},
 
 		pidfile =
-			{
-				1,
-				function( file )
-					clSettings.pidfile=file
-				end
-			},
+		{
+			1,
+			function( file )
+				clSettings.pidfile=file
+			end
+		},
 
 		rsync    =
-			{
-				2,
-				function( src, trg )
-					clSettings.syncs = clSettings.syncs or { }
-					table.insert(
-						clSettings.syncs,
-						{ 'rsync', src, trg }
-					)
-				end
-			},
+		{
+			2,
+			function( src, trg )
+				clSettings.syncs = clSettings.syncs or { }
+				table.insert(
+					clSettings.syncs,
+					{ 'rsync', src, trg }
+				)
+			end
+		},
 
 		rsyncssh =
-			{
-				3,
-				function( src, host, tdir )
-					clSettings.syncs = clSettings.syncs or { }
-					table.insert(
-						clSettings.syncs,
-						{ 'rsyncssh', src, host, tdir }
-					)
-				end
-			},
+		{
+			3,
+			function( src, host, tdir )
+				clSettings.syncs = clSettings.syncs or { }
+				table.insert(
+					clSettings.syncs,
+					{ 'rsyncssh', src, host, tdir }
+				)
+			end
+		},
 
 		direct =
-			{
-				2,
-				function( src, trg )
-					clSettings.syncs = clSettings.syncs or { }
-					table.insert(
-						clSettings.syncs,
-						{ 'direct', src, trg }
-					)
-				end
-			},
+		{
+			2,
+			function( src, trg )
+				clSettings.syncs = clSettings.syncs or { }
+				table.insert(
+					clSettings.syncs,
+					{ 'direct', src, trg }
+				)
+			end
+		},
 
 		version =
-			{
-				0,
-				function( )
-					io.stdout:write( 'Version: ', lsyncd_version, '\n' )
-					os.exit( 0 )
-				end
-			}
+		{
+			0,
+			function( )
+				io.stdout:write( 'Version: ', lsyncd_version, '\n' )
+				os.exit( 0 )
+			end
+		}
 	}
 
 	-- non-opts is filled with all args that were no part dash options
@@ -3816,7 +3847,7 @@ function runner.initialize( firstTime )
 		log(
 			'Warn',
 			'settings = { ... } is deprecated.\n'..
-			'      please use settings{ ... } (without the equal sign)'
+					'      please use settings{ ... } (without the equal sign)'
 		)
 
 		for k, v in pairs( settings ) do
@@ -3990,8 +4021,8 @@ function runner.initialize( firstTime )
 
 			error(
 				'sync ' ..
-				s.config.name ..
-				' has no known event monitor interface.'
+						s.config.name ..
+						' has no known event monitor interface.'
 			)
 
 		end
@@ -4049,8 +4080,8 @@ function runner.getAlarm( )
 	-- but only if the global process limit is not yet reached.
 	--
 	if
-		not uSettings.maxProcesses or
-		processCount < uSettings.maxProcesses
+	not uSettings.maxProcesses or
+			processCount < uSettings.maxProcesses
 	then
 		for _, s in Syncs.iwalk( ) do
 			checkAlarm( s:getAlarm ( ))
@@ -4089,8 +4120,8 @@ runner.fsEventsEvent = Fsevents.event
 -- Collector for every child process that finished in startup phase
 --
 function runner.collector(
-	pid,       -- pid of the child process
-	exitcode   -- exitcode of the child process
+pid,       -- pid of the child process
+exitcode   -- exitcode of the child process
 )
 	if exitcode ~= 0 then
 		log('Error', 'Startup process',pid,' failed')
@@ -4131,11 +4162,25 @@ end
 --
 -- Called by core on a term signal.
 --
-function runner.term( )
+function runner.term( sigcode )
+
+	local sigtexts = {
+		[ 2 ] =
+		'INT',
+
+		[ 15 ] =
+		'TERM'
+	};
+
+	local sigtext = sigtexts[ sigcode ];
+
+	if not sigtext then
+		sigtext = 'UNKNOWN'
+	end
 
 	log(
 		'Normal',
-		'--- TERM signal, fading ---'
+		'--- ', sigtext, ' signal, fading ---'
 	)
 
 	lsyncdStatus = 'fade'
@@ -4169,15 +4214,15 @@ end
 -- Spawns a new child process.
 --
 function spawn(
-	agent,  -- the reason why a process is spawned.
-	        -- a delay or delay list for a sync
-	        -- it will mark the related files as blocked.
-	binary, -- binary to call
-	...     -- arguments
+agent,  -- the reason why a process is spawned.
+-- a delay or delay list for a sync
+-- it will mark the related files as blocked.
+binary, -- binary to call
+...     -- arguments
 )
 	if
-		agent == nil or
-		type( agent ) ~= 'table'
+	agent == nil or
+			type( agent ) ~= 'table'
 	then
 		error(
 			'spawning with an invalid agent',
@@ -4240,8 +4285,8 @@ function spawn(
 
 		processCount = processCount + 1
 		if
-			uSettings.maxProcesses and
-			processCount > uSettings.maxProcesses
+		uSettings.maxProcesses and
+				processCount > uSettings.maxProcesses
 		then
 			error( 'Spawned too much processes!' )
 		end
@@ -4272,9 +4317,9 @@ end
 -- Spawns a child process using the default shell.
 --
 function spawnShell(
-	agent,     -- the delay(list) to spawn the command for
-	command,   -- the shell command
-	...        -- additonal arguments
+agent,     -- the delay(list) to spawn the command for
+command,   -- the shell command
+...        -- additonal arguments
 )
 	return spawn(
 		agent,
@@ -4290,9 +4335,9 @@ end
 -- Observes a filedescriptor
 --
 function observefd(
-	fd,     -- file descriptor
-	ready,  -- called when fd is ready to be read
-	writey  -- called when fd is ready to be written
+fd,     -- file descriptor
+ready,  -- called when fd is ready to be read
+writey  -- called when fd is ready to be written
 )
 	return lsyncd.observe_fd(
 		fd,
@@ -4305,7 +4350,7 @@ end
 -- Stops observeing a filedescriptor
 --
 function nonobservefd(
-	fd      -- file descriptor
+fd      -- file descriptor
 )
 	return lsyncd.nonobserve_fd( fd )
 end
